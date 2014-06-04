@@ -1,15 +1,34 @@
+#include <Keypad.h>
+#include <LiquidCrystal.h>               //agrega la libreria del LCD
+const byte filas = 4;                    //define las 4 filas del teclado 
+const byte columnas = 3;                 //define las 3 columnas del teclado
+char teclas[filas][columnas] =           //inicializa filas y columnas
+{
+  {'1','2','3'},
+  {'4','5','6'},
+  {'7','8','9'},
+  {'*','0','#'}
+};
+
 #define sw1 PINC, 0
 #define sw2 PINC, 1
 #define sw3 PINC, 2
 #define sw4 PINC, 3
 
-#include <LiquidCrystal.h> //agrega la libreria del LCD
+
+byte pinesfilas[filas] = {21,20,19,18};    //define los pines digitales de las cuatro filas
+byte pinescolumnas[columnas] = {17,16,15}; //define los pines digitales de las tres columnas
+Keypad teclado = Keypad( makeKeymap(teclas), pinesfilas,  pinescolumnas, filas, columnas ); //lectura del teclado      
+Keypad teclado2 = Keypad( makeKeymap(teclas), pinesfilas,  pinescolumnas, filas, columnas ); //lectura del teclado          
+
 
 LiquidCrystal lcd(48,49,45,44,43,42);    //inicializa la libreria y define los pines digitales para el LCD
 
 char* almacen[10][3]; //matriz donde se guardan los productos, las secciones y cuantos hay en stock
-int stock[10]; //arreglo de la cantidad de productos
+int cantidad[10]; //arreglo de la cantidad de productos
 char* secciones[5]; //arreglo de secciones
+char pp;
+char cp;
   
 void setup() {
   pinMode(47,OUTPUT);
@@ -51,6 +70,8 @@ void loop() {
         lcd.setCursor(1,0);
         lcd.print(almacen[i][1]);
         lcd.setCursor(1,1);
+        lcd.print(cantidad[i]);
+        lcd.setCursor(5,1);
         lcd.print(almacen[i][2]);
         delay(2000);
       }
@@ -62,13 +83,49 @@ void loop() {
   
   if(bitRead(PINC, sw4)==HIGH){
      lcd.setCursor(1,0);
-     lcd.print("COMPRAR?");
+     lcd.print("COMPRAR?       ");
      lcd.setCursor(1,1);
      lcd.print("SI[]    NO[]");
+     while (bitRead(PINC, sw3)==HIGH){
+       lcd.clear();
+       if (compra()){
+          lcd.clear();
+          lcd.setCursor(1,0);
+          lcd.print("Gracias por su compra");
+          delay(1000);
+       }
+     }
   }
   else if (bitRead(PINC, sw1)==LOW && bitRead(PINC, sw2)==LOW && bitRead(PINC, sw3)==LOW){
     lcd.clear();
   }
+}
+
+boolean compra(){
+    lcd.clear();
+    //delay(1000);
+    lcd.setCursor(1,0); 
+    lcd.print("Digite el producto 0-9");
+    pp = teclado.getKey();
+    while(pp == '\0') {
+      pp = teclado.getKey();
+    }
+    lcd.setCursor(1,1); 
+    lcd.print(pp);
+    delay(1000); 	
+      lcd.clear();
+      delay(1000);
+      lcd.setCursor(1,0); 
+      lcd.print("Digite cantidad");
+      cp = teclado2.getKey();
+      while(cp == '\0') {
+        cp = teclado2.getKey();
+      }
+       	
+      int valor = cp-48;
+      
+      cantidad[pp-48] = cantidad[pp-48] - valor;
+        return true;
 }
 
 void stock() {
@@ -78,16 +135,16 @@ void stock() {
   secciones[3] = "s4 - aseo       ";
   secciones[4] = "s5 - frutas     ";
   
-  producto[0] = 10;
-  producto[1] = 15;
-  producto[2] = 19;
-  producto[3] = 16;
-  producto[4] = 45;
-  producto[5] = 34;
-  producto[6] = 22;
-  producto[7] = 29;
-  producto[8] = 12;
-  producto[9] = 8;
+  cantidad[0] = 10; //leche
+  cantidad[1] = 15; //huevos
+  cantidad[2] = 19; //carne
+  cantidad[3] = 16; //pollo
+  cantidad[4] = 45; //arroz
+  cantidad[5] = 34; //maiz
+  cantidad[6] = 22; //escoba
+  cantidad[7] = 29; //jabon
+  cantidad[8] = 12; //papaya
+  cantidad[9] = 8;  //sandia
   
   almacen[0][0] = "s1 - lacteos   ";
   almacen[0][1] = "leche          ";
