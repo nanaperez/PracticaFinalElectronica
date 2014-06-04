@@ -41,8 +41,6 @@ void loop() {
   if(bitRead(PINC, sw1)==HIGH){
     lcd.setCursor(1,0);
     lcd.print("Bienvenido!!");
-    lcd.setCursor(1,1);
-    lcd.print("Gracias por su compra");
   }
   else if (bitRead(PINC, sw2)==LOW && bitRead(PINC, sw3)==LOW && bitRead(PINC, sw4)==LOW){
     lcd.clear();

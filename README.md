@@ -1,7 +1,7 @@
 PracticaFinalElectronica
 ========================
 
-Codigo de la practica final hecha en Arduino
+Codigo de la practica final hecha en Arduino, hecha por Alejandra Perez y Jesse Cogollo
 
 sw1 = Bienvenida!!
 ==========================================================================================================================
